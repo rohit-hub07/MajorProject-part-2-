@@ -1,0 +1,14 @@
+<% layout("/layouts/boilerPlate")%>
+<body>
+  <h3>All Listings</h3>
+  <ul>
+    <% for(let listing of allListings){%>
+      <a href="/listings/<%= listing._id%>"><li><%= listing.title%></li></a>
+    <%}%>
+    <% for(let listing of allListings){%>
+      <a href="/listings/<%= listing._id%>"><li><%= listing.title%></li></a>
+    <%}%>
+    </ul>
+</body>
+
+

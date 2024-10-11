@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Update route</title>
+</head>
+<body>
+  <h3>Create New Listing</h3>
+  <form method="post" action="/listings/<%=info._id%>?_method=PATCH">
+    <input type="text" name="listing[title]" value="<%=info.title%>">
+    <br><br>
+    <textarea type="text" name="listing[description]"><%=info.description%></textarea>
+    <br><br>
+    <input type="text" name="listing[image.filename]" value="<%=info.image.filename%>">
+    <br><br>
+    <input name="listing[image.url]" value="<%= info.image.url%>">
+    <br><br>
+    <input name="listing[price]" value="<%=info.price%>">
+    <br><br>
+    <input type="text" name="listing[location]" value="<%=info.location%>"">
+    <br><br>
+    <input type="text" name="listing[country]" value="<%=info.country%>"">
+    <br><br>
+    <button>Add</button>
+  </form>
+</body>
+</html>
