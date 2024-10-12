@@ -1,28 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Update route</title>
-</head>
-<body>
-  <h3>Create New Listing</h3>
+<% layout("/layouts/boilerPlate")%>
+<div class="row">
+  <div class="col-8 offset-2">
+    <br><br>
+  <h3>Update Listing</h3>
   <form method="post" action="/listings/<%=info._id%>?_method=PATCH">
-    <input type="text" name="listing[title]" value="<%=info.title%>">
+    <div class="mb-3">
+      <label for="title" class="form-label"></label>
+      <input class="form-control" type="text" name="listing[title]" value="<%=info.title%>">
+    </div>
+
+    <div class="mb-3">
+      <label for="Description" class="form-label">Description</label>
+      <textarea class="form-control" type="text" name="listing[description]"><%=info.description%></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="image.filename" class="form-label">Image filename</label>
+      <input type="text" class="form-control" name="listing[image.filename]" value="<%=info.image.filename%>">
+    </div>
+    
+    <div class="mb-3">
+      <label for="image.url" class="form-label">Image Url</label>
+      <input class="form-control" name="listing[image.url]" value="<%= info.image.url%>">
+    </div>
+    
+    <div class="row">
+      <div class="mb-3 col-md-4">
+        <label for="price" class="form-label">Price</label>
+        <input class="form-control" name="listing[price]" value="&#8377; <%=info.price.toLocaleString("en-IN")%>">
+      </div>
+      
+      <div class="mb-3 col-md-8">
+        <label for="location" class="form-label">Location</label>
+        <input type="text" class="form-control" name="listing[location]" value="<%=info.location%>"">
+      </div>
+    </div>
+    
+    
+    <div class="mb-3">
+      <label for="country" class="form-label">Country</label>
+      <input class="form-control" type="text" name="listing[country]" value="<%=info.country%>"">
+    </div>
+    
+    <button class="btn btn-dark">Add</button>
     <br><br>
-    <textarea type="text" name="listing[description]"><%=info.description%></textarea>
-    <br><br>
-    <input type="text" name="listing[image.filename]" value="<%=info.image.filename%>">
-    <br><br>
-    <input name="listing[image.url]" value="<%= info.image.url%>">
-    <br><br>
-    <input name="listing[price]" value="<%=info.price%>">
-    <br><br>
-    <input type="text" name="listing[location]" value="<%=info.location%>"">
-    <br><br>
-    <input type="text" name="listing[country]" value="<%=info.country%>"">
-    <br><br>
-    <button>Add</button>
   </form>
-</body>
-</html>
+</div>
+</div>
