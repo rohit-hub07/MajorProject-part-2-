@@ -8,7 +8,8 @@ const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
 const { listingSchema } = require("./schema.js");
-
+const Review = require("./models/review.js");
+const { reviewSchema } = require("./schema.js");
 
 //public folder
 app.use(express.static(path.join(__dirname, "/public")));
@@ -37,12 +38,25 @@ async function main() {
   await mongoose.connect("mongodb://127.0.0.1/WanderLust");
 }
 
+
 const validateListing = (req, res, next)=>{
   let { error } = listingSchema.validate(req.body);
     // console.log(result);
     if(error){
       let errMsg = error.details.map((er) => er.message).join(",");
       throw new ExpressError(400,errMsg)
+    }else{
+      next();
+    }
+}
+
+const validateReview = (req, res, next)=>{
+  let { error } = reviewSchema.validate(req.body);
+    // console.log(result);
+    if(error){
+      let errMsg = error.details.map((er) => er.message).join(",");
+      throw new ExpressError(400,errMsg)
+      
     }else{
       next();
     }
@@ -62,7 +76,7 @@ app.get("/listings/new", (req, res) => {
 // show route
 app.get("/listings/:id", wrapAsync( async (req, res) => {
   let { id } = req.params;
-  let details = await Listing.findById(id);
+  let details = await Listing.findById(id).populate("reviews");
   res.render("listings/show.ejs", { details });
 }));
 
@@ -101,8 +115,39 @@ app.put("/listings/:id",validateListing,wrapAsync( async (req, res) => {
 app.delete("/listings/:id", wrapAsync( async (req, res) => {
   let { id } = req.params;
   let destory = await Listing.findByIdAndDelete(id);
+  console.log(destory);
   res.redirect("/listings");
 }));
+
+//reviews route
+app.post("/listings/:id/reviews",validateReview,wrapAsync(async(req,res)=>{
+  let { id } = req.params;
+  //finding the listing by the id
+  let listing = await Listing.findById(id);
+  //extracting the values of the reviews from the form
+  let newReview = new Review(req.body.review);
+  //pushing the review in the listings
+  listing.reviews.push(newReview);
+  await newReview.save();
+  await listing.save();
+  res.redirect(`/listings/${listing._id}`)
+}));
+
+//delete reviews
+app.delete("/listings/:id/reviews/:reviewId",async(req,res)=>{
+  let { id, reviewId } = req.params;
+  //to delete the reviews from the listing we have to use $pull 
+  await Listing.findByIdAndUpdate(id,{$pull: {reviews: reviewId}})
+  await Review.findByIdAndDelete(reviewId);
+  res.redirect(`/listings/${id}`);
+
+  // let { id } = req.params;
+  // let listing = req.params.id;
+  // console.log(listing);
+  // await Review.findById(req.params.id);
+  // res.redirect("/listings/<%listing._id%>");
+  
+})
 
 // main route
 app.get("/", (req, res) => {
@@ -117,6 +162,7 @@ app.use((err, req, res, next) => {
   let { status=500, message="Something went wrong"} = err;
   res.status(status).render("error.ejs",{message})
 });
+
 
 app.listen(8080, () => {
   console.log("App is listening to port: 8080");
