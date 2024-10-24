@@ -9,8 +9,8 @@ const listingSchema = new mongoose.Schema({
   },
   description: String,
   image: {
-    filename: String,
-    url: String,
+    type: String,
+    default: "https://th.bing.com/th/id/OIP.mURrmR_uNDX74zSE3_tbwAHaFj?w=229&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7",
   },
   price: Number,
   location: String,
