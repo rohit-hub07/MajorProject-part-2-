@@ -3,43 +3,46 @@ const router = express.Router();
 const User = require("../models/user.js");
 const wrapAsync = require("../utils/wrapAsync.js");
 const passport = require("passport");
+const { saveRedirectUrl } = require("../middleware.js");
+const userController = require("../controllers/user.js");
 
+router
+  .route("/signup")
+  .get(userController.renderSignupForm)
+  .post(wrapAsync(userController.signup));
 
-router.get("/signup", (req, res) => {
-  res.render("users/signup.ejs");
-});
+// router.get("/signup", userController.renderSignupForm);
 
-router.post(
-  "/signup",
-  wrapAsync(async (req, res) => {
-    try {
-      let { username, email, password } = req.body;
-      const newUser = new User({ email, username });
-      const registeredUser = await User.register(newUser, password);
-      // console.log(registeredUser);
-      req.flash("success", "Welcome to WanderLust!");
-      res.redirect("/listings");
-    } catch (er) {
-      req.flash("error", er.message);
-      res.redirect("/signup");
-      // console.log(er);
-    }
-  })
-);
+// router.post(
+//   "/signup",
+//   wrapAsync(userController.signup)
+// );
 
-router.get("/login", (req, res) => {
-  res.render("users/login.ejs");
-});
+router
+  .route("/login")
+  .get(userController.RenderLoginForm)
+  .post(
+    saveRedirectUrl,
+    passport.authenticate("local", {
+      failureRedirect: "/login",
+      failureFlash: true,
+    }),
+    userController.login
+  );
 
-router.post(
-  "/login",
-  passport.authenticate("local", {
-    failureRedirect: "/login",
-    failureFlash: true,
-  }),
-  async (req, res) => {
-    res.flash("success","Welcome to WanderLust: You are logged in!");
-  }
-);
+// router.get("/login", userController.RenderLoginForm);
+
+// router.post(
+//   "/login",
+//   saveRedirectUrl,
+//   passport.authenticate("local", {
+//     failureRedirect: "/login",
+//     failureFlash: true,
+//   }),
+//   userController.login
+// );
+
+//logout route
+router.get("/logout", userController.logout);
 
 module.exports = router;

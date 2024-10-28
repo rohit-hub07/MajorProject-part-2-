@@ -9,8 +9,8 @@ const listingSchema = new mongoose.Schema({
   },
   description: String,
   image: {
-    type: String,
-    default: "https://th.bing.com/th/id/OIP.mURrmR_uNDX74zSE3_tbwAHaFj?w=229&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7",
+    url: String,
+    filename: String,
   },
   price: Number,
   location: String,
@@ -19,8 +19,23 @@ const listingSchema = new mongoose.Schema({
     {
     type: Schema.Types.ObjectId,
     ref: "Review",
+    },
+  ],
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+  },
+  geometry: {
+    type: {
+      type: String, // Don't do `{ location: { type: String } }`
+      enum: ['Point'], // 'location.type' must be 'Point'
+      required: true
+    },
+    coordinates: {
+      type: [Number],
+      required: true
+    }
   }
-]
 })
 
 //middle to delete reviews with listings

@@ -1,50 +1,61 @@
 <% layout("/layouts/boilerPlate")%>
-<div class="row">
-  <div class="col-8 offset-2">
-    <br><br>
-  <h3>Update Listing</h3>
-  <form method="post" action="/listings/<%=info._id%>?_method=PUT" novalidate class="needs-validation">
-    <div class="mb-3">
-      <label for="title" class="form-label"></label>
-      <input class="form-control" type="text" name="listing[title]" value="<%=info.title%>" required>
-      <div class="invalid-feedback">Please give a suitable title</div>
+  <div class="row">
+    <div class="col-8 offset-2">
+      <br><br>
+      <h3>Update Listing</h3>
+      <form method="post" action="/listings/<%=info._id%>?_method=PUT" novalidate class="needs-validation"
+        enctype="multipart/form-data">
+        <div class="mb-3">
+          <label for="title" class="form-label"></label>
+          <input class="form-control" type="text" name="listing[title]" value="<%=info.title%>" required>
+          <div class="invalid-feedback">Please give a suitable title</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="Description" class="form-label">Description</label>
+          <textarea class="form-control" type="text" name="listing[description]"
+            required><%=info.description%></textarea>
+          <div class="invalid-feedback">Description should be valid</div>
+        </div>
+
+        <div class="mb-3">
+          Original Listing Image <br>
+          <img src="<%=originalImageUrl%>"  height=150px>
+        </div>
+
+        <div class="mb-3">
+          <label for="image" class="form-label">Upload New Image</label>
+          <input class="form-control" name="listing[image]" 
+          type="file"
+          />
+          <div class="invalid-feedback">Please enter image-url</div>
+        </div>
+
+        <div class="row">
+          <div class="mb-3 col-md-4">
+            <label for="price" class="form-label">Price</label>
+            <input class="form-control" type="number" name="listing[price]" value="<%=info.price%>" required />
+            <div class="invalid-feedback">Price should be valid</div>
+          </div>
+
+          <div class="mb-3 col-md-8">
+            <label for="location" class="form-label">Location</label>
+            <input type="text" class="form-control" name="listing[location]" value="<%=info.location%>"" required />
+        <div class=" invalid-feedback">Location should be valid
+          </div>
+        </div>
     </div>
 
-    <div class="mb-3">
-      <label for="Description" class="form-label">Description</label>
-      <textarea class="form-control" type="text" name="listing[description]" required><%=info.description%></textarea>
-      <div class="invalid-feedback">Description should be valid</div>
-    </div>
-    
-    <div class="mb-3">
-      <label for="image" class="form-label">Image Url</label>
-      <input class="form-control" name="listing[image]" value="<%= info.image%>" required />
-      <div class="invalid-feedback">Please enter image-url</div>
-    </div>
-    
-    <div class="row">
-      <div class="mb-3 col-md-4">
-        <label for="price" class="form-label">Price</label>
-        <input class="form-control" type="number" name="listing[price]" value="<%=info.price%>" required />
-        <div class="invalid-feedback">Price should be valid</div>
-      </div>
-      
-      <div class="mb-3 col-md-8">
-        <label for="location" class="form-label">Location</label>
-        <input type="text" class="form-control" name="listing[location]" value="<%=info.location%>"" required />
-        <div class="invalid-feedback">Location should be valid</div>
-      </div>
-    </div>
-    
-    
+
     <div class="mb-3">
       <label for="country" class="form-label">Country</label>
       <input class="form-control" type="text" name="listing[country]" value="<%=info.country%>"" required />
-      <div class="invalid-feedback">Country name should be valid</div>
+      <div class=" invalid-feedback">Country name should be valid
     </div>
-    
-    <button class="btn btn-dark">Add</button>
-    <br><br>
+  </div>
+
+  <button class="btn btn-dark">Add</button>
+  <br><br>
   </form>
-</div>
-</div>
+  </div>
+  </div>
