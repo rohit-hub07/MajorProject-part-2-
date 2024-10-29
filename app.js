@@ -1,4 +1,4 @@
-if(process.env.NODE_ENV != "prodection"){
+if(process.env.NODE_ENV != "production"){
   require('dotenv').config()
 }
 
@@ -17,6 +17,7 @@ const Review = require("./models/review.js");
 const { reviewSchema } = require("./schema.js");
 
 const session = require("express-session");
+const MongoStore = require('connect-mongo');
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -45,6 +46,8 @@ app.set("views", path.join(__dirname, "views"));
 //middleware
 app.use(express.urlencoded({ extended: true }));
 
+const dbUrl = process.env.ATLASDB_URL;
+
 main()
   .then((res) => {
     console.log("Connected to DB");
@@ -53,13 +56,26 @@ main()
     console.log(err);
   });
 async function main() {
-  await mongoose.connect("mongodb://127.0.0.1/WanderLust");
+  await mongoose.connect(dbUrl);
 }
 
+//mongo-connect to use the sessions info
+const store = MongoStore.create({
+  mongoUrl: dbUrl,
+  crypto: {
+    secret: process.env.SECRET,
+  },
+  touchAfter: 24 * 3600,
+});
+
+store.on("error",()=>{
+  console.log("Error in Mongo session store", err);
+});
 
 //session- used to save user credentials in the webssite
 const sessionOptions = {
-  secret: "mysupersecretcode",
+  store: store,
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -69,10 +85,13 @@ const sessionOptions = {
   },
 };
 
-// main route
-app.get("/", (req, res) => {
-  res.send("App is in the main route");
-});
+
+
+
+// // main route
+// app.get("/", (req, res) => {
+//   res.send("App is in the main route");
+// });
 
 //middle to to define sessions
 app.use(session(sessionOptions));
